@@ -1,0 +1,25 @@
+# MacOS
+.DS_Store
+
+# IDE
+.idea
+.vscode
+
+# Cache
+*.pyc
+*.pyo
+*/__pycache__
+*/.pytest_cache
+
+# Virtual Environment
+/venv
+/.venv
+
+# Environment Variables
+.env
+
+# Logs
+*.log
+
+# Data
+*.csv
