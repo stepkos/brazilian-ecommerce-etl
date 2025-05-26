@@ -75,3 +75,24 @@ def transform_cities(cities: pd.DataFrame) -> pd.DataFrame:
     df = df.where(pd.notnull(df), None)
     df = df.astype(object).where(pd.notnull(df), None)
     return df
+
+
+def generate_timestamps(start_year=2016, end_year=2018) -> pd.DataFrame:
+    dt_range = pd.date_range(
+        start=f'{start_year}-01-01 00:00',
+        end=f'{end_year}-12-31 23:00',
+        freq='h'
+    )
+
+    df = pd.DataFrame({'datetime': dt_range})
+
+    df['timestamp'] = df['datetime'].dt.strftime('%Y%m%d%H')
+    df['year'] = df['datetime'].dt.year
+    df['month'] = df['datetime'].dt.month
+    df['day'] = df['datetime'].dt.day
+    df['hour'] = df['datetime'].dt.hour
+
+    df = df[['timestamp', 'year', 'month', 'day', 'hour']]
+
+    return df
+

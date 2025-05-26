@@ -38,11 +38,11 @@ CREATE_TABLES_SQL = [
         customer_unique_id                   VARCHAR(50)    NULL,
         customer_city_id                     VARCHAR(50)    NULL,
         order_status                         VARCHAR(50)    NULL,
-        order_purchase_timestamp             DATETIME       NULL,
-        order_approved_timestamp             DATETIME       NULL,
-        order_delivered_carrier_timestamp    DATETIME       NULL,
-        order_delivered_customer_timestamp   DATETIME       NULL,
-        order_estimated_delivery_timestamp   DATETIME       NULL,
+        order_purchase_timestamp             VARCHAR(10)       NULL,
+        order_approved_timestamp             VARCHAR(10)       NULL,
+        order_delivered_carrier_timestamp    VARCHAR(10)       NULL,
+        order_delivered_customer_timestamp   VARCHAR(10)       NULL,
+        order_estimated_delivery_timestamp   VARCHAR(10)       NULL,
 
         CONSTRAINT FK_ORDERS_City
             FOREIGN KEY(customer_city_id) REFERENCES DIM_CITIES(city_id)
@@ -66,7 +66,7 @@ CREATE_TABLES_SQL = [
         product_id                 VARCHAR(50)    NOT NULL,
         seller_id                  VARCHAR(50)    NULL,
         seller_city_id             VARCHAR(50)    NULL,
-        shipping_limit_timestamp   DATETIME       NULL,
+        shipping_limit_timestamp   VARCHAR(10)       NULL,
         price                      DECIMAL(12,2)  NULL,
         freight_value              DECIMAL(12,2)  NULL,
 
@@ -86,8 +86,8 @@ CREATE_TABLES_SQL = [
         review_score            int            NULL,
         review_comment_title    VARCHAR(255)   NULL,
         review_comment_message  TEXT           NULL,
-        review_creation_date    DATETIME       NULL,
-        review_answer_timestamp DATETIME       NULL,
+        review_creation_timestamp VARCHAR(10)       NULL,
+        review_answer_timestamp VARCHAR(10)       NULL,
 
         CONSTRAINT FK_REVIEWS_OrderItems
             FOREIGN KEY(order_id) REFERENCES DIM_ORDERS(order_id)

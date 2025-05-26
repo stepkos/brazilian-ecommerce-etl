@@ -1,7 +1,7 @@
 # from connector import connector
 from etl.extract import extract_csv
 # from etl.load import load_sql, load_df_to_table
-from etl.transform import transform_products, transform_cities
+from etl.transform import transform_products, transform_cities, generate_timestamps
 from sql.create_tables import CREATE_TABLES_SQL
 from sql.drop_tables import DROP_TABLES_SQL
 
@@ -25,6 +25,9 @@ transformed_products = transform_products(
 
 transformed_cities = transform_cities(extracted_cities)
 
+transformed_timestamps = generate_timestamps(2016, 2018)
+
+print(transformed_timestamps)
 print("Data transformed successfully")
 
 # Load
@@ -40,11 +43,14 @@ print("Data transformed successfully")
 #
 #     cursor.fast_executemany = True
 #
-    # # Load products
+    # Load products
     # load_df_to_table(cursor, transformed_products, 'DIM_PRODUCTS')
     #
     # # Load cities
     # load_df_to_table(cursor, transformed_cities, 'DIM_CITIES')
+    #
+    # # Load timestamps
+    # load_df_to_table(cursor, transformed_timestamps, 'DIM_TIMESTAMP')
     #
     # connector.conn.commit()
     # print("Data loaded successfully")
@@ -55,7 +61,6 @@ print("Data transformed successfully")
 # finally:
 #     connector.close()
 
-# CITIES
 # TIMESTAMPS (based on DIM_ORDERS, FACT_ORDER_ITEMS, DIM_REVIEWS)
 
 # 2.
