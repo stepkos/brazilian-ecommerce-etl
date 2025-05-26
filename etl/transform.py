@@ -1,5 +1,18 @@
 import pandas as pd
 import uuid
+from unidecode import unidecode
+
+
+def sanitize_string(s):
+    if pd.isna(s):
+        return None
+    return unidecode(s).lower()
+
+
+def to_datetime_str(dt):
+    if pd.isna(dt):
+        return None
+    return pd.to_datetime(dt).strftime('%Y%m%d%H')
 
 
 def transform_products(
@@ -96,3 +109,42 @@ def generate_timestamps(start_year=2016, end_year=2018) -> pd.DataFrame:
 
     return df
 
+
+def transform_orders(
+    raw_orders: pd.DataFrame,
+    raw_customers: pd.DataFrame,
+    transformed_cities: pd.DataFrame
+) -> pd.DataFrame:
+    transformed_cities = transformed_cities.copy()
+
+    orders_customers = raw_orders.merge(
+        raw_customers[['customer_id', 'customer_unique_id', 'customer_city']],
+        on='customer_id',
+        how='left'
+    )
+
+    orders_customers['customer_city'] = orders_customers['customer_city'].apply(sanitize_string)
+    transformed_cities['city_name'] = transformed_cities['city_name'].apply(sanitize_string)
+
+    orders_customers_cities = orders_customers.merge(
+        transformed_cities[['city_id', 'city_name']],
+        left_on='customer_city',
+        right_on='city_name',
+        how='left'
+    )
+
+    df = orders_customers_cities
+
+    transformed = pd.DataFrame({
+        'order_id': df['order_id'],
+        'customer_unique_id': df['customer_unique_id'],
+        'customer_city_id': df['city_id'],
+        'order_status': df['order_status'],
+        'order_purchase_timestamp': df['order_purchase_timestamp'].apply(to_datetime_str),
+        'order_approved_timestamp': df['order_approved_at'].apply(to_datetime_str),
+        'order_delivered_carrier_timestamp': df['order_delivered_carrier_date'].apply(to_datetime_str),
+        'order_delivered_customer_timestamp': df['order_delivered_customer_date'].apply(to_datetime_str),
+        'order_estimated_delivery_timestamp': df['order_estimated_delivery_date'].apply(to_datetime_str),
+    })
+
+    return transformed
