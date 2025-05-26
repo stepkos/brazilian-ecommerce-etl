@@ -177,12 +177,6 @@ def transform_reviews(raw_reviews: pd.DataFrame) -> pd.DataFrame:
         'review_id': raw_reviews['review_id'],
         'order_id': raw_reviews['order_id'],
         'review_score': pd.to_numeric(raw_reviews['review_score'], errors='coerce'),
-        # 'review_comment_title': raw_reviews['review_comment_title'].astype(str).where(
-        #     raw_reviews['review_comment_title'].notna(), None
-        # ),
-        # 'review_comment_message': raw_reviews['review_comment_message'].astype(str).where(
-        #     raw_reviews['review_comment_message'].notna(), None
-        # ),
         'review_creation_timestamp': raw_reviews['review_creation_date'].apply(to_datetime_str),
         'review_answer_timestamp': raw_reviews['review_answer_timestamp'].apply(to_datetime_str),
     })
@@ -196,7 +190,9 @@ def transform_reviews(raw_reviews: pd.DataFrame) -> pd.DataFrame:
 def transform_order_items(
     raw_order_items: pd.DataFrame,
     extracted_sellers: pd.DataFrame,
-    transformed_cities: pd.DataFrame
+    transformed_cities: pd.DataFrame,
+    transformed_orders: pd.DataFrame,
+    transform_reviews: pd.DataFrame
 ) -> pd.DataFrame:
     cache_file = cache_path / f"transformed_order_items.pkl"
     if cache_file.exists():
@@ -216,15 +212,34 @@ def transform_order_items(
         on='seller_id',
         how='left'
     )
+    order_items_all = order_items_full.merge(
+        transformed_orders,
+        on='order_id',
+        how='left'
+    )
+    order_items_all = order_items_all.merge(
+        transform_reviews[['review_id', 'order_id']],
+        on='order_id',
+        how='left'
+    )
     transformed = pd.DataFrame({
-        'order_item_position': order_items_full['order_item_id'].astype('Int64'),
-        'order_id': order_items_full['order_id'],
-        'product_id': order_items_full['product_id'],
-        'seller_id': order_items_full['seller_id'],
-        'seller_city_id': order_items_full['city_id'],
-        'shipping_limit_timestamp': order_items_full['shipping_limit_date'].apply(to_datetime_str),
-        'price': order_items_full['price'].apply(lambda x: Decimal(str(x)) if pd.notnull(x) else None),
-        'freight_value': order_items_full['freight_value'].apply(lambda x: Decimal(str(x)) if pd.notnull(x) else None)
+        'order_item_position': order_items_all['order_item_id'].astype('Int64'),
+        'order_id': order_items_all['order_id'],
+        'product_id': order_items_all['product_id'],
+        'seller_id': order_items_all['seller_id'],
+        'review_id': order_items_all['review_id'],
+        'seller_city_id': order_items_all['city_id'],
+        'shipping_limit_timestamp': order_items_all['shipping_limit_date'].apply(to_datetime_str),
+        'price': order_items_all['price'].apply(lambda x: Decimal(str(x)) if pd.notnull(x) else None),
+        'freight_value': order_items_all['freight_value'].apply(lambda x: Decimal(str(x)) if pd.notnull(x) else None),
+        'customer_unique_id': order_items_all['customer_unique_id'],
+        'customer_city_id': order_items_all['customer_city_id'],
+        'order_status': order_items_all['order_status'],
+        'order_purchase_timestamp': order_items_all['order_purchase_timestamp'],
+        'order_approved_timestamp': order_items_all['order_approved_timestamp'],
+        'order_delivered_carrier_timestamp': order_items_all['order_delivered_carrier_timestamp'],
+        'order_delivered_customer_timestamp': order_items_all['order_delivered_customer_timestamp'],
+        'order_estimated_delivery_timestamp': order_items_all['order_estimated_delivery_timestamp'],
     })
     transformed['order_item_id'] = transformed.apply(
         lambda row: generate_order_item_id(row['order_id'], row['order_item_position']),

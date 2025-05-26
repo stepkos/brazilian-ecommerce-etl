@@ -32,23 +32,6 @@ CREATE_TABLES_SQL = [
     );
     """,
     """
-    CREATE TABLE DIM_ORDERS
-    (
-        order_id                             VARCHAR(50)    NOT NULL PRIMARY KEY,
-        customer_unique_id                   VARCHAR(50)    NULL,
-        customer_city_id                     VARCHAR(50)    NULL,
-        order_status                         VARCHAR(50)    NULL,
-        order_purchase_timestamp             VARCHAR(10)       NULL,
-        order_approved_timestamp             VARCHAR(10)       NULL,
-        order_delivered_carrier_timestamp    VARCHAR(10)       NULL,
-        order_delivered_customer_timestamp   VARCHAR(10)       NULL,
-        order_estimated_delivery_timestamp   VARCHAR(10)       NULL,
-
-        CONSTRAINT FK_ORDERS_City
-            FOREIGN KEY(customer_city_id) REFERENCES DIM_CITIES(city_id)
-    );
-    """,
-    """
     CREATE TABLE DIM_TIMESTAMP
     (
         timestamp VARCHAR(10) NOT NULL PRIMARY KEY,
@@ -56,27 +39,6 @@ CREATE_TABLES_SQL = [
         [month]        INT            NOT NULL,
         [day]          INT            NOT NULL,
         [hour]         INT            NOT NULL
-    );
-    """,
-    """
-    CREATE TABLE FACT_ORDER_ITEMS
-    (
-        order_item_id              VARCHAR(50)    NOT NULL PRIMARY KEY,
-        order_item_position        INT            NULL,
-        order_id                   VARCHAR(50)    NOT NULL,
-        product_id                 VARCHAR(50)    NOT NULL,
-        seller_id                  VARCHAR(50)    NULL,
-        seller_city_id             VARCHAR(50)    NULL,
-        shipping_limit_timestamp   VARCHAR(10)       NULL,
-        price                      DECIMAL(12,2)  NULL,
-        freight_value              DECIMAL(12,2)  NULL,
-
-        CONSTRAINT FK_FACT_ORDERITEMS_Orders
-            FOREIGN KEY(order_id) REFERENCES DIM_ORDERS(order_id),
-        CONSTRAINT FK_FACT_ORDERITEMS_Products
-            FOREIGN KEY(product_id) REFERENCES DIM_PRODUCTS(product_id),
-        CONSTRAINT FK_FACT_ORDERITEMS_Cities
-            FOREIGN KEY(seller_city_id) REFERENCES DIM_CITIES(city_id)
     );
     """,
     """
@@ -89,9 +51,40 @@ CREATE_TABLES_SQL = [
         review_comment_message  TEXT           NULL,
         review_creation_timestamp VARCHAR(10)       NULL,
         review_answer_timestamp VARCHAR(10)       NULL,
+    );
+    """,
+    """
+    CREATE TABLE FACT_ORDER_ITEMS
+    (
+        order_item_id              VARCHAR(50)    NOT NULL PRIMARY KEY,
+        order_item_position        INT            NULL,
+        order_id                   VARCHAR(50)    NOT NULL,
+        product_id                 VARCHAR(50)    NOT NULL,
+        review_id               VARCHAR(50)    NULL,
+        seller_id                  VARCHAR(50)    NULL,
+        seller_city_id             VARCHAR(50)    NULL,
+        shipping_limit_timestamp   VARCHAR(10)       NULL,
+        price                      DECIMAL(12,2)  NULL,
+        freight_value              DECIMAL(12,2)  NULL,
+        customer_unique_id                   VARCHAR(50)    NULL,
+        customer_city_id                     VARCHAR(50)    NULL,
+        order_status                         VARCHAR(50)    NULL,
+        order_purchase_timestamp             VARCHAR(10)       NULL,
+        order_approved_timestamp             VARCHAR(10)       NULL,
+        order_delivered_carrier_timestamp    VARCHAR(10)       NULL,
+        order_delivered_customer_timestamp   VARCHAR(10)       NULL,
+        order_estimated_delivery_timestamp   VARCHAR(10)       NULL,
 
-        CONSTRAINT FK_REVIEWS_OrderItems
-            FOREIGN KEY(order_id) REFERENCES DIM_ORDERS(order_id)
+        CONSTRAINT FK_ORDERS_City
+            FOREIGN KEY(customer_city_id) REFERENCES DIM_CITIES(city_id),
+        CONSTRAINT FK_FACT_ORDERITEMS_Orders
+            FOREIGN KEY(order_id) REFERENCES DIM_ORDERS(order_id),
+        CONSTRAINT FK_FACT_ORDERITEMS_Products
+            FOREIGN KEY(product_id) REFERENCES DIM_PRODUCTS(product_id),
+        CONSTRAINT FK_FACT_ORDERITEMS_Cities
+            FOREIGN KEY(seller_city_id) REFERENCES DIM_CITIES(city_id),
+        CONSTRAINT FK_FACT_ORDERITEMS_Reviews
+            FOREIGN KEY(review_id) REFERENCES DIM_REVIEWS(review_id),
     );
     """
 ]

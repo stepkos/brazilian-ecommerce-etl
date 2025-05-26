@@ -45,7 +45,9 @@ print("Orders transformed successfully")
 transformed_reviews = transform_reviews(extracted_reviews)
 print('Reviews transformed  successfully')
 
-transformed_order_items = transform_order_items(extracted_order_items, extracted_sellers, transformed_cities)
+transformed_order_items = transform_order_items(
+    extracted_order_items, extracted_sellers, transformed_cities, transformed_orders, transformed_reviews
+)
 print("Order items transformed successfully")
 print("All data transformed successfully")
 
@@ -70,10 +72,7 @@ print("All data transformed successfully")
 #
 #     # Load timestamps
 #     load_df_to_table(cursor, transformed_timestamps, 'DIM_TIMESTAMP')
-#
-#     # Load orders
-#     load_df_to_table(cursor, transformed_orders, 'DIM_ORDERS')
-#
+
 #     # Load reviews
 #     load_df_to_table(cursor, transformed_reviews, 'DIM_REVIEWS')
 
