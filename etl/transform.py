@@ -217,7 +217,7 @@ def transform_order_items(
         how='left'
     )
     transformed = pd.DataFrame({
-        'order_item_position': order_items_full['order_item_position'],
+        'order_item_position': order_items_full['order_item_id'].astype('Int64'),
         'order_id': order_items_full['order_id'],
         'product_id': order_items_full['product_id'],
         'seller_id': order_items_full['seller_id'],
