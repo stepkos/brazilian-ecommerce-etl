@@ -1,6 +1,10 @@
+from pathlib import Path
+
 import pandas as pd
 import uuid
 from unidecode import unidecode
+
+cache_path = Path(__file__).parent.parent / "cache"
 
 
 def sanitize_string(s):
@@ -115,6 +119,10 @@ def transform_orders(
     raw_customers: pd.DataFrame,
     transformed_cities: pd.DataFrame
 ) -> pd.DataFrame:
+    cache_file = cache_path / f"transformed_orders.pkl"
+    if cache_file.exists():
+        return pd.read_pickle(cache_file)
+
     transformed_cities = transformed_cities.copy()
 
     orders_customers = raw_orders.merge(
@@ -146,5 +154,8 @@ def transform_orders(
         'order_delivered_customer_timestamp': df['order_delivered_customer_date'].apply(to_datetime_str),
         'order_estimated_delivery_timestamp': df['order_estimated_delivery_date'].apply(to_datetime_str),
     })
-
+    transformed = transformed.drop_duplicates(subset=['order_id'])
+    transformed = transformed.where(pd.notnull(transformed), None)
+    transformed = transformed.astype(object).where(pd.notnull(transformed), None)
+    transformed.to_pickle(cache_file)
     return transformed

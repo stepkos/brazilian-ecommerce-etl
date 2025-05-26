@@ -16,22 +16,28 @@ extracted_cities = extract_csv(
 extracted_orders = extract_csv("orders.csv", cache=True)
 extracted_customers = extract_csv("customers.csv", cache=True)
 
-print("Data extracted successfully")
+print("All data extracted successfully")
 
 # Transform
 transformed_products = transform_products(
     extracted_products,
     extracted_product_category_name_translation
 )
+print("Products transformed successfully")
 transformed_cities = transform_cities(extracted_cities)
+print("Cities transformed successfully")
 transformed_timestamps = generate_timestamps(2016, 2018)
+print("Timestamps generated successfully")
 transformed_orders = transform_orders(
     extracted_orders,
     extracted_customers,
     transformed_cities
 )
+print(transformed_orders.values[:5])
+print("Orders transformed successfully")
+
 # print(transformed_orders.values[:5])
-print("Data transformed successfully")
+print("All data transformed successfully")
 
 # Load
 # try:
