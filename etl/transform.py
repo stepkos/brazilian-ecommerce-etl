@@ -170,15 +170,16 @@ def transform_reviews(raw_reviews: pd.DataFrame) -> pd.DataFrame:
         'review_id': raw_reviews['review_id'],
         'order_id': raw_reviews['order_id'],
         'review_score': pd.to_numeric(raw_reviews['review_score'], errors='coerce'),
-        'review_comment_title': raw_reviews['review_comment_title'].astype(str).where(
-            raw_reviews['review_comment_title'].notna(), None
-        ),
-        'review_comment_message': raw_reviews['review_comment_message'].astype(str).where(
-            raw_reviews['review_comment_message'].notna(), None
-        ),
+        # 'review_comment_title': raw_reviews['review_comment_title'].astype(str).where(
+        #     raw_reviews['review_comment_title'].notna(), None
+        # ),
+        # 'review_comment_message': raw_reviews['review_comment_message'].astype(str).where(
+        #     raw_reviews['review_comment_message'].notna(), None
+        # ),
         'review_creation_timestamp': raw_reviews['review_creation_date'].apply(to_datetime_str),
         'review_answer_timestamp': raw_reviews['review_answer_timestamp'].apply(to_datetime_str),
     })
+    transformed = transformed.drop_duplicates(subset=['review_id'])
     transformed = transformed.where(pd.notnull(transformed), None)
     transformed = transformed.astype(object).where(pd.notnull(transformed), None)
     transformed.to_pickle(cache_file)

@@ -42,7 +42,6 @@ print("Orders transformed successfully")
 transformed_reviews = transform_reviews(extracted_reviews)
 print('Reviews transformed  successfully')
 
-# print(transformed_orders.values[:5])
 print("All data transformed successfully")
 
 # Load
@@ -66,10 +65,10 @@ print("All data transformed successfully")
 
     # Load timestamps
     # load_df_to_table(cursor, transformed_timestamps, 'DIM_TIMESTAMP')
-
+    # connector.conn.commit()
     # # Load orders
     # load_df_to_table(cursor, transformed_orders, 'DIM_ORDERS')
-
+    # connector.conn.commit()
     # Load reviews
     # load_df_to_table(cursor, transformed_reviews, 'DIM_REVIEWS')
 
