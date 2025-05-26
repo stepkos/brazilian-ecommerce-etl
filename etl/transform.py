@@ -1,3 +1,4 @@
+from decimal import Decimal
 from pathlib import Path
 
 import pandas as pd
@@ -184,3 +185,44 @@ def transform_reviews(raw_reviews: pd.DataFrame) -> pd.DataFrame:
     transformed = transformed.astype(object).where(pd.notnull(transformed), None)
     transformed.to_pickle(cache_file)
     return transformed
+
+
+def transform_order_items(
+    raw_order_items: pd.DataFrame,
+    extracted_sellers: pd.DataFrame,
+    transformed_cities: pd.DataFrame
+) -> pd.DataFrame:
+    cache_file = cache_path / f"transformed_order_items.pkl"
+    if cache_file.exists():
+        return pd.read_pickle(cache_file)
+
+    cities = transformed_cities[['city_id', 'city_name']].copy()
+    cities['city_name'] = cities['city_name'].apply(sanitize_string)
+
+    sellers_cities = extracted_sellers.merge(
+        cities,
+        left_on='seller_city',
+        right_on='city_name',
+        how='left'
+    )
+    order_items_full = raw_order_items.merge(
+        sellers_cities[['seller_id', 'city_id']],
+        on='seller_id',
+        how='left'
+    )
+    transformed = pd.DataFrame({
+        'order_item_id': order_items_full['order_item_id'].astype(str),
+        'order_id': order_items_full['order_id'],
+        'product_id': order_items_full['product_id'],
+        'seller_id': order_items_full['seller_id'],
+        'seller_city_id': order_items_full['city_id'],
+        'shipping_limit_timestamp': order_items_full['shipping_limit_date'].apply(to_datetime_str),
+        'price': order_items_full['price'].apply(lambda x: Decimal(str(x)) if pd.notnull(x) else None),
+        'freight_value': order_items_full['freight_value'].apply(lambda x: Decimal(str(x)) if pd.notnull(x) else None)
+    })
+    transformed = transformed.drop_duplicates(subset=['order_item_id'])
+    transformed = transformed.where(pd.notnull(transformed), None)
+    transformed = transformed.astype(object).where(pd.notnull(transformed), None)
+    transformed.to_pickle(cache_file)
+    return transformed
+
