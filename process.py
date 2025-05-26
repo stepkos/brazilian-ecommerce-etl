@@ -60,13 +60,13 @@ print("All data transformed successfully")
 #
     # Load products
     # load_df_to_table(cursor, transformed_products, 'DIM_PRODUCTS')
-    #
+
     # # Load cities
     # load_df_to_table(cursor, transformed_cities, 'DIM_CITIES')
-    #
+
     # Load timestamps
     # load_df_to_table(cursor, transformed_timestamps, 'DIM_TIMESTAMP')
-    #
+
     # # Load orders
     # load_df_to_table(cursor, transformed_orders, 'DIM_ORDERS')
 
@@ -74,7 +74,6 @@ print("All data transformed successfully")
     # load_df_to_table(cursor, transformed_reviews, 'DIM_REVIEWS')
 
     # connector.conn.commit()
-    # print("Data loaded successfully")
 # except Exception as e:
 #     connector.conn.rollback()
 #     print("Failed to load data")

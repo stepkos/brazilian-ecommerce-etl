@@ -162,6 +162,10 @@ def transform_orders(
 
 
 def transform_reviews(raw_reviews: pd.DataFrame) -> pd.DataFrame:
+    cache_file = cache_path / f"transformed_reviews.pkl"
+    if cache_file.exists():
+        return pd.read_pickle(cache_file)
+
     transformed = pd.DataFrame({
         'review_id': raw_reviews['review_id'],
         'order_id': raw_reviews['order_id'],
@@ -175,5 +179,7 @@ def transform_reviews(raw_reviews: pd.DataFrame) -> pd.DataFrame:
         'review_creation_timestamp': raw_reviews['review_creation_date'].apply(to_datetime_str),
         'review_answer_timestamp': raw_reviews['review_answer_timestamp'].apply(to_datetime_str),
     })
-
+    transformed = transformed.where(pd.notnull(transformed), None)
+    transformed = transformed.astype(object).where(pd.notnull(transformed), None)
+    transformed.to_pickle(cache_file)
     return transformed
