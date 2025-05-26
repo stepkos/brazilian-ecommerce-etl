@@ -62,6 +62,7 @@ CREATE_TABLES_SQL = [
     CREATE TABLE FACT_ORDER_ITEMS
     (
         order_item_id              VARCHAR(50)    NOT NULL PRIMARY KEY,
+        order_item_position        INT            NULL,
         order_id                   VARCHAR(50)    NOT NULL,
         product_id                 VARCHAR(50)    NOT NULL,
         seller_id                  VARCHAR(50)    NULL,

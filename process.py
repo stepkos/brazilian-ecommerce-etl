@@ -47,7 +47,6 @@ print('Reviews transformed  successfully')
 
 transformed_order_items = transform_order_items(extracted_order_items, extracted_sellers, transformed_cities)
 print("Order items transformed successfully")
-
 print("All data transformed successfully")
 
 # Load

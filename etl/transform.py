@@ -49,6 +49,12 @@ def generate_city_id(state: str, city: str) -> str:
     return uuid.uuid5(namespace, name).hex
 
 
+def generate_order_item_id(order_id: str, position: int) -> str:
+    namespace = uuid.NAMESPACE_DNS
+    name = f"{order_id}-{position}"
+    return uuid.uuid5(namespace, name).hex
+
+
 def transform_cities(cities: pd.DataFrame) -> pd.DataFrame:
     cols_map = {
         'CITY': 'city_name',
@@ -211,7 +217,7 @@ def transform_order_items(
         how='left'
     )
     transformed = pd.DataFrame({
-        'order_item_id': order_items_full['order_item_id'].astype(str),
+        'order_item_position': order_items_full['order_item_position'],
         'order_id': order_items_full['order_id'],
         'product_id': order_items_full['product_id'],
         'seller_id': order_items_full['seller_id'],
@@ -220,6 +226,10 @@ def transform_order_items(
         'price': order_items_full['price'].apply(lambda x: Decimal(str(x)) if pd.notnull(x) else None),
         'freight_value': order_items_full['freight_value'].apply(lambda x: Decimal(str(x)) if pd.notnull(x) else None)
     })
+    transformed['order_item_id'] = transformed.apply(
+        lambda row: generate_order_item_id(row['order_id'], row['order_item_position']),
+        axis=1
+    )
     transformed = transformed.drop_duplicates(subset=['order_item_id'])
     transformed = transformed.where(pd.notnull(transformed), None)
     transformed = transformed.astype(object).where(pd.notnull(transformed), None)
