@@ -21,6 +21,7 @@ def transform_products(
 
     merged = merged.drop(['product_name_lenght', 'product_description_lenght'], axis=1)
     merged = merged.where(pd.notnull(merged), None)
+    merged = merged.astype(object).where(pd.notnull(merged), None)
     return merged
 
 
@@ -71,5 +72,6 @@ def transform_cities(cities: pd.DataFrame) -> pd.DataFrame:
         'ibge_du_rural',
         'ibge_pop',
     ]]
-
+    df = df.where(pd.notnull(df), None)
+    df = df.astype(object).where(pd.notnull(df), None)
     return df
