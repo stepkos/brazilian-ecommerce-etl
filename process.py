@@ -1,5 +1,5 @@
 from etl.extract import extract_csv
-from etl.load import load_sql, load_df_to_table
+# from etl.load import load_sql, load_df_to_table
 from etl.transform import transform_products
 from sql.create_tables import CREATE_TABLES_SQL
 from sql.drop_tables import DROP_TABLES_SQL
@@ -17,19 +17,19 @@ transformed_products = transform_products(
 )
 
 # Load
-from connector import connector
-cursor = connector.get_cursor()
-
-# Drop tables
-for drop_sql in DROP_TABLES_SQL:
-    load_sql(cursor, drop_sql)
-
-# Create tables
-for create_sql in CREATE_TABLES_SQL:
-    load_sql(cursor, create_sql)
-
-# Load products
-load_df_to_table(cursor, transformed_products)
+# from connector import connector
+# cursor = connector.get_cursor()
+#
+# # Drop tables
+# for drop_sql in DROP_TABLES_SQL:
+#     load_sql(cursor, drop_sql)
+#
+# # Create tables
+# for create_sql in CREATE_TABLES_SQL:
+#     load_sql(cursor, create_sql)
+#
+# # Load products
+# load_df_to_table(cursor, transformed_products, 'DIM_PRODUCTS')
 
 
 # CITIES
@@ -40,9 +40,9 @@ load_df_to_table(cursor, transformed_products)
 # REVIEWS
 # ORDER_ITEMS
 
-connector.close()
+# connector.close()
 
 
 if __name__ == "__main__":
-    ...
+    print(transformed_products)
 

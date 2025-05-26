@@ -13,7 +13,7 @@ def extract_csv(file_path: str, cache: bool = True) -> pd.DataFrame:
 
     file_path = data_path / file_path
     print(f"Extracting data from {file_path}")
-    df = pd.read_csv(file_path)
+    df = pd.read_csv(file_path, na_values=[''])
     if cache:
         df.to_pickle(cache_file)
     return df

@@ -19,4 +19,5 @@ def transform_products(
     merged['product_width_cm'] = merged['product_width_cm'].fillna(0).astype(int)
 
     merged = merged.drop(['product_name_lenght', 'product_description_lenght'], axis=1)
+    merged = merged.where(pd.notnull(merged), None)
     return merged

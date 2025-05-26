@@ -6,7 +6,6 @@ def load_sql(
     cursor: pyodbc.Cursor, sql: str,
 ):
     cursor.execute(sql)
-    return cursor.fetchall()
 
 
 def load_df_to_table(
