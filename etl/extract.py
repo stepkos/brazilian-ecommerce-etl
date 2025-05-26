@@ -20,5 +20,5 @@ def extract_csv(file_path: str, cache: bool = True) -> pd.DataFrame:
 
 
 if __name__ == "__main__":
-    df = extract_csv("customers.csv", cache=True)
+    df = extract_csv("products.csv", cache=True)
     print(df.head())
