@@ -1,6 +1,6 @@
-# from connector import connector
+from connector import connector
 from etl.extract import extract_csv
-# from etl.load import load_sql, load_df_to_table
+from etl.load import load_sql, load_df_to_table
 from etl.transform import transform_products, transform_cities, generate_timestamps, transform_orders, transform_reviews
 from sql.create_tables import CREATE_TABLES_SQL
 from sql.drop_tables import DROP_TABLES_SQL
@@ -45,41 +45,39 @@ print('Reviews transformed  successfully')
 print("All data transformed successfully")
 
 # Load
-# try:
-#     cursor = connector.get_cursor()
-#     # Drop tables
-#     for drop_sql in DROP_TABLES_SQL:
-#         load_sql(cursor, drop_sql)
-#
-#     # Create tables
-#     for create_sql in CREATE_TABLES_SQL:
-#         load_sql(cursor, create_sql)
-#
-#     cursor.fast_executemany = True
-#
-    # Load products
-    # load_df_to_table(cursor, transformed_products, 'DIM_PRODUCTS')
+try:
+    cursor = connector.get_cursor()
+    # Drop tables
+    for drop_sql in DROP_TABLES_SQL:
+        load_sql(cursor, drop_sql)
 
-    # # Load cities
-    # load_df_to_table(cursor, transformed_cities, 'DIM_CITIES')
+    # Create tables
+    for create_sql in CREATE_TABLES_SQL:
+        load_sql(cursor, create_sql)
+
+    cursor.fast_executemany = True
+
+    # Load products
+    load_df_to_table(cursor, transformed_products, 'DIM_PRODUCTS')
+
+    # Load cities
+    load_df_to_table(cursor, transformed_cities, 'DIM_CITIES')
 
     # Load timestamps
-    # load_df_to_table(cursor, transformed_timestamps, 'DIM_TIMESTAMP')
-    # connector.conn.commit()
-    # # Load orders
-    # load_df_to_table(cursor, transformed_orders, 'DIM_ORDERS')
-    # connector.conn.commit()
+    load_df_to_table(cursor, transformed_timestamps, 'DIM_TIMESTAMP')
+
+    # Load orders
+    load_df_to_table(cursor, transformed_orders, 'DIM_ORDERS')
+
     # Load reviews
-    # load_df_to_table(cursor, transformed_reviews, 'DIM_REVIEWS')
+    load_df_to_table(cursor, transformed_reviews, 'DIM_REVIEWS')
 
-    # connector.conn.commit()
-# except Exception as e:
-#     connector.conn.rollback()
-#     print("Failed to load data")
-#     raise e
-# finally:
-#     connector.close()
+    connector.conn.commit()
+except Exception as e:
+    connector.conn.rollback()
+    print("Failed to load data")
+    raise e
+finally:
+    connector.close()
 
-
-# REVIEWS
 # ORDER_ITEMS
