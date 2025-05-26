@@ -5,7 +5,9 @@ cache_path = Path(__file__).parent.parent / "cache"
 data_path = Path(__file__).parent.parent / "data"
 
 
-def extract_csv(file_path: str, cache: bool = True) -> pd.DataFrame:
+def extract_csv(
+    file_path: str, cache: bool = True, delimiter = None
+) -> pd.DataFrame:
     cache_file = cache_path / f"{Path(file_path).stem}.pkl"
     if cache and cache_file.exists():
         print(f"Loading cached data from {cache_file}")
@@ -13,7 +15,7 @@ def extract_csv(file_path: str, cache: bool = True) -> pd.DataFrame:
 
     file_path = data_path / file_path
     print(f"Extracting data from {file_path}")
-    df = pd.read_csv(file_path, na_values=[''])
+    df = pd.read_csv(file_path, na_values=[''], delimiter=delimiter)
     if cache:
         df.to_pickle(cache_file)
     return df
