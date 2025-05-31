@@ -2,7 +2,7 @@
 from etl.extract import extract_csv
 # from etl.load import load_sql, load_df_to_table
 from etl.transform import transform_products, transform_cities, generate_timestamps, transform_orders, \
-    transform_reviews, transform_order_items
+    transform_reviews, transform_order_items, transform_timestamps
 from sql.create_tables import CREATE_TABLES_SQL
 from sql.drop_tables import DROP_TABLES_SQL
 
@@ -32,15 +32,15 @@ print("Products transformed successfully")
 transformed_cities = transform_cities(extracted_cities)
 print("Cities transformed successfully")
 
-transformed_timestamps = generate_timestamps(2016, 2018)
-print("Timestamps generated successfully")
-
 transformed_orders = transform_orders(
     extracted_orders,
     extracted_customers,
     transformed_cities
 )
 print("Orders transformed successfully")
+
+transformed_timestamps = transform_timestamps(extracted_order_items, extracted_orders)
+print("Timestamps generated successfully")
 
 transformed_reviews = transform_reviews(extracted_reviews)
 print('Reviews transformed  successfully')

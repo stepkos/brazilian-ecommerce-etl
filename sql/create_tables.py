@@ -77,14 +77,26 @@ CREATE_TABLES_SQL = [
 
         CONSTRAINT FK_ORDERS_City
             FOREIGN KEY(customer_city_id) REFERENCES DIM_CITIES(city_id),
-        CONSTRAINT FK_FACT_ORDERITEMS_Orders
-            FOREIGN KEY(order_id) REFERENCES DIM_ORDERS(order_id),
         CONSTRAINT FK_FACT_ORDERITEMS_Products
             FOREIGN KEY(product_id) REFERENCES DIM_PRODUCTS(product_id),
         CONSTRAINT FK_FACT_ORDERITEMS_Cities
             FOREIGN KEY(seller_city_id) REFERENCES DIM_CITIES(city_id),
         CONSTRAINT FK_FACT_ORDERITEMS_Reviews
             FOREIGN KEY(review_id) REFERENCES DIM_REVIEWS(review_id),
+            
+        -- timestamps
+        CONSTRAINT FK_FACT_ORDERITEMS_Timestamp_Purchase
+            FOREIGN KEY(order_purchase_timestamp) REFERENCES DIM_TIMESTAMP(timestamp),
+        CONSTRAINT FK_FACT_ORDERITEMS_Timestamp_Approved
+            FOREIGN KEY(order_approved_timestamp) REFERENCES DIM_TIMESTAMP(timestamp),
+        CONSTRAINT FK_FACT_ORDERITEMS_Timestamp_Delivered_Carrier
+            FOREIGN KEY(order_delivered_carrier_timestamp) REFERENCES DIM_TIMESTAMP(timestamp),
+        CONSTRAINT FK_FACT_ORDERITEMS_Timestamp_Delivered_Customer
+            FOREIGN KEY(order_delivered_customer_timestamp) REFERENCES DIM_TIMESTAMP(timestamp),
+        CONSTRAINT FK_FACT_ORDERITEMS_Timestamp_Estimated_Delivery
+            FOREIGN KEY(order_estimated_delivery_timestamp) REFERENCES DIM_TIMESTAMP(timestamp),
+        CONSTRAINT FK_FACT_ORDERITEMS_Shipping_Limit
+            FOREIGN KEY(shipping_limit_timestamp) REFERENCES DIM_TIMESTAMP(timestamp)
     );
     """
 ]

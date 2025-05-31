@@ -121,6 +121,37 @@ def generate_timestamps(start_year=2016, end_year=2018) -> pd.DataFrame:
     return df
 
 
+def transform_timestamps(raw_order_items: pd.DataFrame, raw_orders: pd.DataFrame) -> pd.DataFrame:
+    datetime_cols = [
+        'order_purchase_timestamp',
+        'order_approved_at',
+        'order_delivered_carrier_date',
+        'order_delivered_customer_date',
+        'order_estimated_delivery_date'
+    ]
+
+    timestamps = pd.concat([
+        raw_orders[col].dropna().astype(str) for col in datetime_cols
+    ], ignore_index=True)
+
+    shipping_limits = raw_order_items['shipping_limit_date'].dropna().astype(str)
+
+    all_timestamps = pd.concat([timestamps, shipping_limits], ignore_index=True)
+    all_timestamps = pd.to_datetime(all_timestamps)
+
+    df = pd.DataFrame({'datetime': all_timestamps})
+    df['timestamp'] = df['datetime'].dt.strftime('%Y%m%d%H')
+    df['year'] = df['datetime'].dt.year
+    df['month'] = df['datetime'].dt.month
+    df['day'] = df['datetime'].dt.day
+    df['hour'] = df['datetime'].dt.hour
+
+    df = df[['timestamp', 'year', 'month', 'day', 'hour']]
+    df = df.drop_duplicates().sort_values('timestamp').reset_index(drop=True)
+
+    return df
+
+
 def transform_orders(
     raw_orders: pd.DataFrame,
     raw_customers: pd.DataFrame,
