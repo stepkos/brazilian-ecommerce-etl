@@ -47,10 +47,8 @@ CREATE_TABLES_SQL = [
         review_id               VARCHAR(50)    NOT NULL PRIMARY KEY,
         order_id                VARCHAR(50)    NOT NULL,
         review_score            int            NULL,
-        review_comment_title    VARCHAR(255)   NULL,
-        review_comment_message  TEXT           NULL,
-        review_creation_timestamp VARCHAR(10)       NULL,
-        review_answer_timestamp VARCHAR(10)       NULL,
+        review_comment_title_length    int   NOT NULL,
+        review_comment_message_length  int   NOT NULL,
     );
     """,
     """
